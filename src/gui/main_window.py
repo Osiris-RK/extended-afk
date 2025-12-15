@@ -158,7 +158,7 @@ class MainWindow:
         # Start button
         self.start_button = tk.Button(
             button_frame,
-            text="START PRESSING KEYS",
+            text="Start",
             command=self._start_pressing,
             bg=BUTTON_START_COLOR,
             fg="white",
@@ -173,7 +173,7 @@ class MainWindow:
         # Stop button
         self.stop_button = tk.Button(
             button_frame,
-            text="STOP PRESSING KEYS",
+            text="Stop",
             command=self._stop_pressing,
             bg=BUTTON_STOP_COLOR,
             fg="white",
@@ -389,7 +389,7 @@ class MainWindow:
         # Handle backward compatibility with old 'keys' format
         if not keys_config:
             old_keys = self.settings.get('keys', [])
-            old_press_twice = self.settings.get('press_twice', True)
+            old_press_twice = self.settings.get('press_twice', False)
             keys_config = [{'key': k, 'press_twice': old_press_twice} for k in old_keys]
 
         # Limit to first 3 keys
@@ -397,7 +397,7 @@ class MainWindow:
 
         for config in keys_config:
             key_name = config.get('key', config) if isinstance(config, dict) else config
-            press_twice = config.get('press_twice', True) if isinstance(config, dict) else True
+            press_twice = config.get('press_twice', False) if isinstance(config, dict) else False
             self._add_key_widget(key_name, press_twice)
 
         # Disable add button if we have 3 keys
@@ -436,7 +436,7 @@ class MainWindow:
             if len(self.key_frames) >= 3:
                 self.add_key_button.config(state='disabled')
 
-    def _add_key_widget(self, key_name, press_twice=True):
+    def _add_key_widget(self, key_name, press_twice=False):
         """
         Add a key widget to the keys container.
 

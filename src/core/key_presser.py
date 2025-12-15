@@ -123,7 +123,7 @@ class KeyPresser:
             pressed_keys = []
             for config in self.keys_config:
                 key = config['key']
-                press_twice = config.get('press_twice', True)
+                press_twice = config.get('press_twice', False)
 
                 keyboard.press_and_release(key)
                 logger.debug(f"Pressed key: {key}")

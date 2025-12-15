@@ -7,7 +7,10 @@
       "Bash(python -m PyInstaller:*)",
       "Bash(git init:*)",
       "Bash(git branch:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nMajor update: Windows-style GUI, per-key settings, and separate controls\n\nFeatures:\n- Convert GUI to native Windows-style ttk widgets\n- Add per-key \"Press Twice\" checkbox (removed global setting)\n- Add separate START and STOP buttons instead of toggle\n- Limit maximum keys to 3\n- Fix imports for PyInstaller compatibility\n- Update settings format to support per-key configuration\n- Maintain backward compatibility with old settings\n\nTechnical Changes:\n- Use absolute imports instead of relative imports\n- Update KeyPresser to accept keys_config with per-key settings\n- Settings now store keys_config array with key and press_twice per key\n- GUI uses ttk widgets for native Windows look and feel\n\n🤖 Generated with Claude Code\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git commit:*)",
+      "Bash(git tag:*)"
     ]
   }
 }
