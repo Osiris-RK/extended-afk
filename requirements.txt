@@ -1,0 +1,13 @@
+# Extended AFK Requirements
+
+# Key pressing simulation
+keyboard>=0.13.5
+
+# Key detection
+pynput>=1.7.6
+
+# Image handling for GUI
+Pillow>=10.0.0
+
+# PyInstaller for creating .exe
+pyinstaller>=6.3.0
