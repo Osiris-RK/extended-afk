@@ -12,21 +12,19 @@ logger = logging.getLogger(__name__)
 class KeyPresser:
     """Handles automatic key pressing in a background thread"""
 
-    def __init__(self, keys, min_interval_minutes, max_interval_minutes, press_twice=True, status_callback=None):
+    def __init__(self, keys_config, min_interval_minutes, max_interval_minutes, status_callback=None):
         """
         Initialize key presser.
 
         Args:
-            keys: List of key names to press
+            keys_config: List of dicts with 'key' and 'press_twice' settings
             min_interval_minutes: Minimum interval between presses (in minutes)
             max_interval_minutes: Maximum interval between presses (in minutes)
-            press_twice: Whether to press each key twice
             status_callback: Optional callback function for status updates (receives message string)
         """
-        self.keys = keys
+        self.keys_config = keys_config
         self.min_interval = min_interval_minutes * 60  # Convert to seconds
         self.max_interval = max_interval_minutes * 60  # Convert to seconds
-        self.press_twice = press_twice
         self.status_callback = status_callback
 
         # Threading control
@@ -122,11 +120,16 @@ class KeyPresser:
     def _press_keys(self):
         """Press the configured keys"""
         try:
-            for key in self.keys:
+            pressed_keys = []
+            for config in self.keys_config:
+                key = config['key']
+                press_twice = config.get('press_twice', True)
+
                 keyboard.press_and_release(key)
                 logger.debug(f"Pressed key: {key}")
+                pressed_keys.append(key)
 
-                if self.press_twice:
+                if press_twice:
                     time.sleep(1)  # Delay between presses
                     keyboard.press_and_release(key)
                     logger.debug(f"Pressed key again: {key}")
@@ -134,7 +137,7 @@ class KeyPresser:
                 # Small delay between different keys
                 time.sleep(0.5)
 
-            keys_str = ", ".join(self.keys)
+            keys_str = ", ".join(pressed_keys)
             logger.info(f"Keys pressed: {keys_str}")
             self._send_status(f"Keys pressed: {keys_str}")
 

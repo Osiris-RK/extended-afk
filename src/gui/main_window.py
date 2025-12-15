@@ -6,11 +6,11 @@ import logging
 from PIL import Image, ImageTk
 import os
 
-from ..core.settings import AppSettings
-from ..core.key_presser import KeyPresser
-from ..utils.resource_path import get_resource_path
-from .key_selector import select_key
-from .text_handler import TextHandler, SimpleFormatter
+from core.settings import AppSettings
+from core.key_presser import KeyPresser
+from utils.resource_path import get_resource_path
+from gui.key_selector import select_key
+from gui.text_handler import TextHandler, SimpleFormatter
 
 logger = logging.getLogger(__name__)
 
@@ -83,69 +83,51 @@ class MainWindow:
     def _build_configuration_section(self, parent):
         """Build the configuration section"""
         # Configuration frame
-        config_frame = tk.LabelFrame(
+        config_frame = ttk.LabelFrame(
             parent,
             text=" Configuration ",
-            bg=FRAME_BG,
-            font=("Segoe UI", 10, "bold"),
-            relief=tk.GROOVE,
-            borderwidth=2
+            padding=10
         )
         config_frame.pack(fill=tk.BOTH, padx=5, pady=5)
 
-        # Inner padding
-        config_inner = tk.Frame(config_frame, bg=FRAME_BG)
-        config_inner.pack(fill=tk.BOTH, padx=10, pady=10)
-
         # Keys section
-        keys_label = tk.Label(
-            config_inner,
+        keys_label = ttk.Label(
+            config_frame,
             text="Keys to Press:",
-            bg=FRAME_BG,
-            font=("Segoe UI", 10, "bold"),
-            fg=TEXT_COLOR
+            font=("Segoe UI", 10, "bold")
         )
         keys_label.pack(anchor=tk.W, pady=(0, 5))
 
-        # Keys container (scrollable if needed)
-        self.keys_container = tk.Frame(config_inner, bg=FRAME_BG)
+        # Keys container
+        self.keys_container = ttk.Frame(config_frame)
         self.keys_container.pack(fill=tk.X, pady=(0, 10))
 
         # Add key button
-        add_key_frame = tk.Frame(config_inner, bg=FRAME_BG)
+        add_key_frame = ttk.Frame(config_frame)
         add_key_frame.pack(fill=tk.X, pady=(0, 15))
 
-        self.add_key_button = tk.Button(
+        self.add_key_button = ttk.Button(
             add_key_frame,
             text="Add Key...",
-            command=self._add_key,
-            bg="#2196F3",
-            fg="white",
-            font=("Segoe UI", 9),
-            relief=tk.FLAT,
-            cursor="hand2",
-            padx=15,
-            pady=5
+            command=self._add_key
         )
         self.add_key_button.pack(side=tk.RIGHT)
 
         # Interval section
-        interval_label = tk.Label(
-            config_inner,
+        interval_label = ttk.Label(
+            config_frame,
             text="Interval (minutes):",
-            bg=FRAME_BG,
-            font=("Segoe UI", 10, "bold"),
-            fg=TEXT_COLOR
+            font=("Segoe UI", 10, "bold")
         )
         interval_label.pack(anchor=tk.W, pady=(0, 5))
 
-        interval_frame = tk.Frame(config_inner, bg=FRAME_BG)
+        interval_frame = ttk.Frame(config_frame)
         interval_frame.pack(fill=tk.X, pady=(0, 15))
 
         # Min interval
-        tk.Label(interval_frame, text="Min:", bg=FRAME_BG, fg=TEXT_COLOR).pack(side=tk.LEFT, padx=(0, 5))
+        ttk.Label(interval_frame, text="Min:").pack(side=tk.LEFT, padx=(0, 5))
         self.min_interval_var = tk.IntVar(value=10)
-        min_spinbox = tk.Spinbox(
+        min_spinbox = ttk.Spinbox(
             interval_frame,
             from_=1,
             to=60,
@@ -156,9 +138,9 @@ class MainWindow:
         min_spinbox.pack(side=tk.LEFT, padx=(0, 20))
 
         # Max interval
-        tk.Label(interval_frame, text="Max:", bg=FRAME_BG, fg=TEXT_COLOR).pack(side=tk.LEFT, padx=(0, 5))
+        ttk.Label(interval_frame, text="Max:").pack(side=tk.LEFT, padx=(0, 5))
         self.max_interval_var = tk.IntVar(value=14)
-        max_spinbox = tk.Spinbox(
+        max_spinbox = ttk.Spinbox(
             interval_frame,
             from_=1,
             to=60,
@@ -168,57 +150,57 @@ class MainWindow:
         )
         max_spinbox.pack(side=tk.LEFT)
 
-        # Press twice checkbox
-        self.press_twice_var = tk.BooleanVar(value=True)
-        press_twice_check = tk.Checkbutton(
-            config_inner,
-            text="Press each key twice",
-            variable=self.press_twice_var,
-            command=self._on_settings_changed,
-            bg=FRAME_BG,
-            fg=TEXT_COLOR,
-            font=("Segoe UI", 9),
-            activebackground=FRAME_BG
-        )
-        press_twice_check.pack(anchor=tk.W)
-
     def _build_control_button(self, parent):
-        """Build the start/stop control button"""
+        """Build the start/stop control buttons"""
         button_frame = tk.Frame(parent, bg=BG_COLOR)
         button_frame.pack(fill=tk.X, padx=5, pady=10)
 
-        self.control_button = tk.Button(
+        # Start button
+        self.start_button = tk.Button(
             button_frame,
             text="START PRESSING KEYS",
-            command=self._toggle_pressing,
+            command=self._start_pressing,
             bg=BUTTON_START_COLOR,
             fg="white",
-            font=("Segoe UI", 12, "bold"),
+            font=("Segoe UI", 11, "bold"),
             relief=tk.FLAT,
             cursor="hand2",
             padx=20,
-            pady=15
+            pady=12
         )
-        self.control_button.pack(fill=tk.X)
+        self.start_button.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(0, 5))
+
+        # Stop button
+        self.stop_button = tk.Button(
+            button_frame,
+            text="STOP PRESSING KEYS",
+            command=self._stop_pressing,
+            bg=BUTTON_STOP_COLOR,
+            fg="white",
+            font=("Segoe UI", 11, "bold"),
+            relief=tk.FLAT,
+            cursor="hand2",
+            padx=20,
+            pady=12,
+            state='disabled'
+        )
+        self.stop_button.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(5, 0))
 
     def _build_log_section(self, parent):
         """Build the activity log section"""
         # Log frame
-        log_frame = tk.LabelFrame(
+        log_frame = ttk.LabelFrame(
             parent,
             text=" Activity Log ",
-            bg=FRAME_BG,
-            font=("Segoe UI", 10, "bold"),
-            relief=tk.GROOVE,
-            borderwidth=2
+            padding=5
         )
         log_frame.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
         # Text widget with scrollbar
-        text_container = tk.Frame(log_frame, bg=FRAME_BG)
+        text_container = ttk.Frame(log_frame)
         text_container.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
-        scrollbar = tk.Scrollbar(text_container)
+        scrollbar = ttk.Scrollbar(text_container)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
         self.log_text = tk.Text(
@@ -226,8 +208,6 @@ class MainWindow:
             height=10,
             width=60,
             yscrollcommand=scrollbar.set,
-            bg="#ffffff",
-            fg="#000000",
             font=("Consolas", 9),
             state='disabled',
             wrap=tk.WORD
@@ -403,20 +383,41 @@ class MainWindow:
 
     def _load_settings(self):
         """Load settings and update UI"""
-        # Load keys
-        keys = self.settings.get('keys', [])
-        for key in keys:
-            self._add_key_widget(key)
+        # Load keys configuration (maximum of 3)
+        keys_config = self.settings.get('keys_config', [])
+
+        # Handle backward compatibility with old 'keys' format
+        if not keys_config:
+            old_keys = self.settings.get('keys', [])
+            old_press_twice = self.settings.get('press_twice', True)
+            keys_config = [{'key': k, 'press_twice': old_press_twice} for k in old_keys]
+
+        # Limit to first 3 keys
+        keys_config = keys_config[:3]
+
+        for config in keys_config:
+            key_name = config.get('key', config) if isinstance(config, dict) else config
+            press_twice = config.get('press_twice', True) if isinstance(config, dict) else True
+            self._add_key_widget(key_name, press_twice)
+
+        # Disable add button if we have 3 keys
+        if len(self.key_frames) >= 3:
+            self.add_key_button.config(state='disabled')
 
         # Load intervals
         self.min_interval_var.set(self.settings.get('min_interval_minutes', 10))
         self.max_interval_var.set(self.settings.get('max_interval_minutes', 14))
 
-        # Load press_twice
-        self.press_twice_var.set(self.settings.get('press_twice', True))
-
     def _add_key(self):
         """Add a new key via detection dialog"""
+        # Check if we already have 3 keys (maximum)
+        if len(self.key_frames) >= 3:
+            messagebox.showwarning(
+                "Maximum Keys Reached",
+                "You can only configure a maximum of 3 keys.\n\nDelete an existing key before adding a new one."
+            )
+            return
+
         # Disable control during detection
         self.add_key_button.config(state='disabled')
         self.root.update()
@@ -431,89 +432,88 @@ class MainWindow:
             self._add_key_widget(key)
             self._on_settings_changed()
 
-    def _add_key_widget(self, key_name):
+            # Update add button state if we reached max
+            if len(self.key_frames) >= 3:
+                self.add_key_button.config(state='disabled')
+
+    def _add_key_widget(self, key_name, press_twice=True):
         """
         Add a key widget to the keys container.
 
         Args:
             key_name: Name of the key
+            press_twice: Whether to press this key twice
         """
         # Create frame for this key
-        key_frame = tk.Frame(self.keys_container, bg=FRAME_BG)
+        key_frame = ttk.Frame(self.keys_container)
         key_frame.pack(fill=tk.X, pady=2)
 
         # Key label
-        key_label = tk.Label(
+        key_label = ttk.Label(
             key_frame,
             text=key_name.upper(),
-            bg="white",
-            fg=TEXT_COLOR,
             font=("Segoe UI", 10),
             width=10,
             relief=tk.SUNKEN,
-            borderwidth=1,
-            padx=5,
-            pady=3
+            borderwidth=1
         )
         key_label.pack(side=tk.LEFT, padx=(0, 10))
 
         # Delete button
-        delete_button = tk.Button(
+        delete_button = ttk.Button(
             key_frame,
             text="Delete",
-            command=lambda: self._remove_key_widget(key_frame, key_name),
-            bg="#f44336",
-            fg="white",
-            font=("Segoe UI", 8),
-            relief=tk.FLAT,
-            cursor="hand2",
-            padx=10,
-            pady=2
+            command=lambda: self._remove_key_widget(key_frame)
         )
         delete_button.pack(side=tk.LEFT, padx=(0, 10))
 
-        # Select key button
-        select_button = tk.Button(
+        # Change Key button
+        select_button = ttk.Button(
             key_frame,
-            text="Select Key...",
-            command=lambda: self._replace_key(key_frame, key_name),
-            bg="#2196F3",
-            fg="white",
-            font=("Segoe UI", 8),
-            relief=tk.FLAT,
-            cursor="hand2",
-            padx=10,
-            pady=2
+            text="Change Key...",
+            command=lambda: self._replace_key(key_frame)
         )
-        select_button.pack(side=tk.LEFT)
+        select_button.pack(side=tk.LEFT, padx=(0, 10))
 
-        # Store reference
-        self.key_frames.append((key_frame, key_name))
+        # Press twice checkbox
+        press_twice_var = tk.BooleanVar(value=press_twice)
+        press_twice_check = ttk.Checkbutton(
+            key_frame,
+            text="Press Twice",
+            variable=press_twice_var,
+            command=self._on_settings_changed
+        )
+        press_twice_check.pack(side=tk.LEFT)
 
-    def _remove_key_widget(self, key_frame, key_name):
+        # Store reference (key_frame, key_name, press_twice_var)
+        self.key_frames.append((key_frame, key_name, press_twice_var))
+
+    def _remove_key_widget(self, key_frame):
         """
         Remove a key widget.
 
         Args:
             key_frame: Frame to remove
-            key_name: Key name
         """
         # Remove from list
-        self.key_frames = [(f, k) for f, k in self.key_frames if f != key_frame]
+        self.key_frames = [(f, k, v) for f, k, v in self.key_frames if f != key_frame]
 
         # Destroy widget
         key_frame.destroy()
 
+        # Re-enable add button if we were at max
+        if len(self.key_frames) < 3:
+            self.add_key_button.config(state='normal')
+
         # Save settings
         self._on_settings_changed()
 
-    def _replace_key(self, key_frame, old_key_name):
+    def _replace_key(self, key_frame):
         """
         Replace a key.
 
         Args:
             key_frame: Frame containing the key
-            old_key_name: Current key name
         """
         # Show key selection dialog
         new_key = select_key(self.root)
@@ -521,14 +521,14 @@ class MainWindow:
         if new_key:
             # Update the key name in the frame
             for widget in key_frame.winfo_children():
-                if isinstance(widget, tk.Label):
+                if isinstance(widget, ttk.Label):
                     widget.config(text=new_key.upper())
                     break
 
             # Update in key_frames list
-            for i, (f, k) in enumerate(self.key_frames):
+            for i, (f, k, v) in enumerate(self.key_frames):
                 if f == key_frame:
-                    self.key_frames[i] = (f, new_key)
+                    self.key_frames[i] = (f, new_key, v)
                     break
 
             # Save settings
@@ -536,31 +536,23 @@ class MainWindow:
 
     def _on_settings_changed(self):
         """Handle settings change"""
-        # Get current keys
-        keys = [k for f, k in self.key_frames]
+        # Get current keys with press_twice settings
+        keys_config = [
+            {'key': k, 'press_twice': v.get()}
+            for f, k, v in self.key_frames
+        ]
 
         # Update settings
-        self.settings.set('keys', keys)
+        self.settings.set('keys_config', keys_config)
         self.settings.set('min_interval_minutes', self.min_interval_var.get())
         self.settings.set('max_interval_minutes', self.max_interval_var.get())
-        self.settings.set('press_twice', self.press_twice_var.get())
 
         logger.debug("Settings updated")
-
-    def _toggle_pressing(self):
-        """Toggle key pressing on/off"""
-        if self.key_presser and self.key_presser.is_running():
-            # Stop pressing
-            self._stop_pressing()
-        else:
-            # Start pressing
-            self._start_pressing()
 
     def _start_pressing(self):
         """Start key pressing"""
         # Validate settings
-        keys = [k for f, k in self.key_frames]
-        if not keys:
+        if not self.key_frames:
             messagebox.showwarning("No Keys", "Please add at least one key to press.")
             return
 
@@ -574,12 +566,17 @@ class MainWindow:
             )
             return
 
+        # Get keys configuration
+        keys_config = [
+            {'key': k, 'press_twice': v.get()}
+            for f, k, v in self.key_frames
+        ]
+
         # Create key presser
         self.key_presser = KeyPresser(
-            keys=keys,
+            keys_config=keys_config,
             min_interval_minutes=min_int,
             max_interval_minutes=max_int,
-            press_twice=self.press_twice_var.get(),
             status_callback=self._on_key_presser_status
         )
 
@@ -587,11 +584,9 @@ class MainWindow:
         try:
             self.key_presser.start()
 
-            # Update button
-            self.control_button.config(
-                text="STOP PRESSING KEYS",
-                bg=BUTTON_STOP_COLOR
-            )
+            # Update buttons
+            self.start_button.config(state='disabled')
+            self.stop_button.config(state='normal')
 
             # Disable configuration
             self._set_config_enabled(False)
@@ -605,11 +600,9 @@ class MainWindow:
         if self.key_presser:
             self.key_presser.stop()
 
-        # Update button
-        self.control_button.config(
-            text="START PRESSING KEYS",
-            bg=BUTTON_START_COLOR
-        )
+        # Update buttons
+        self.start_button.config(state='normal')
+        self.stop_button.config(state='disabled')
 
         # Enable configuration
         self._set_config_enabled(True)

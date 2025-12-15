@@ -1,35 +1,30 @@
 # Extended AFK - Auto Key Presser
 
-A professional GUI application for automatically pressing keyboard keys at random intervals to prevent AFK (Away From Keyboard) timeouts.
+A simple GUI application for automatically pressing keyboard keys at random intervals to prevent AFK (Away From Keyboard) timeouts.
 
 ![Version](https://img.shields.io/badge/version-1.0.0-blue)
 ![Platform](https://img.shields.io/badge/platform-Windows-lightgrey)
 
 ## Features
 
-- **GUI Interface**: Easy-to-use tkinter interface
 - **Customizable Keys**: Select any keyboard keys via click-to-detect system
 - **Configurable Intervals**: Set minimum and maximum intervals between key presses
 - **Activity Log**: Real-time log display showing when keys are pressed
 - **Persistent Settings**: Automatically saves and loads your configuration
-- **Professional Branding**: Includes Osiris DevWorks branding and donation links
 
 ## Download & Installation
 
 You can download Extended AFK from the [GitHub Releases page](https://github.com/Osiris-RK/extended-afk/releases).
 
-### Standalone Executable (Recommended)
+### Standalone Executable
 
 **`ExtendedAFK.exe`** - Portable version (no installation required)
 
 1. Download `ExtendedAFK.exe` from the releases page
 2. **Right-click** the .exe and select **"Run as Administrator"**
    - Admin rights are required for keyboard simulation
-3. Run and configure your keys
+3. Configure your keys and run the application
 
-- No installation needed
-- All settings stored in `%APPDATA%\extended-afk\`
-- Perfect for portable use
 
 ### Running from Source
 
@@ -52,7 +47,6 @@ You can download Extended AFK from the [GitHub Releases page](https://github.com
 
 - Windows 10 or later (64-bit)
 - Administrator privileges (for keyboard simulation)
-- No additional dependencies required for .exe version
 
 ## Usage
 
@@ -77,16 +71,6 @@ You can download Extended AFK from the [GitHub Releases page](https://github.com
 5. **Monitor Activity**:
    - Watch the Activity Log for timestamped key press events
    - Logs are also saved to: `%APPDATA%\extended-afk\logs\extended-afk.log`
-
-## Building the .exe
-
-To build the standalone executable:
-
-```bash
-pyinstaller extended-afk.spec
-```
-
-The .exe will be created in the `dist/` folder.
 
 ## Important Notes
 

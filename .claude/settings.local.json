@@ -6,7 +6,8 @@
       "Bash(pyinstaller:*)",
       "Bash(python -m PyInstaller:*)",
       "Bash(git init:*)",
-      "Bash(git branch:*)"
+      "Bash(git branch:*)",
+      "Bash(git add:*)"
     ]
   }
 }
