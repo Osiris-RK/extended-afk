@@ -34,20 +34,20 @@ class KeyPresser:
     def start(self):
         """Start the key pressing thread"""
         if self._running:
-            logger.warning("Key presser already running")
+            logger.warning("Key pressing already active")
             return
 
         self._stop_event.clear()
         self._running = True
         self._thread = threading.Thread(target=self._run, daemon=True)
         self._thread.start()
-        logger.info("Key presser started")
-        self._send_status("Key presser started")
+        logger.info("Starting key presser...")
+        self._send_status("Key pressing started")
 
     def stop(self):
         """Stop the key pressing thread"""
         if not self._running:
-            logger.warning("Key presser not running")
+            logger.warning("Key pressing not active")
             return
 
         self._stop_event.set()
@@ -57,8 +57,8 @@ class KeyPresser:
         if self._thread and self._thread.is_alive():
             self._thread.join(timeout=2.0)
 
-        logger.info("Key presser stopped")
-        self._send_status("Key presser stopped")
+        logger.info("Key pressing stopped")
+        self._send_status("Key pressing stopped")
 
     def is_running(self):
         """
@@ -73,7 +73,7 @@ class KeyPresser:
         """Main thread worker function"""
         try:
             # Initial delay
-            self._send_status("Starting in 5 seconds...")
+            self._send_status("Initializing... (5 second countdown)")
 
             if self._wait_interruptible(5):
                 return
@@ -86,8 +86,12 @@ class KeyPresser:
                 # Calculate random interval
                 interval = random.randint(int(self.min_interval), int(self.max_interval))
                 minutes = interval // 60
+                seconds = interval % 60
 
-                self._send_status(f"Next key press in {minutes} minutes")
+                if seconds > 0:
+                    self._send_status(f"Next press in {minutes}m {seconds}s")
+                else:
+                    self._send_status(f"Next press in {minutes} minutes")
 
                 # Wait for interval (or stop event)
                 if self._wait_interruptible(interval):
@@ -98,7 +102,7 @@ class KeyPresser:
 
         except Exception as e:
             logger.error(f"Error in key presser thread: {e}", exc_info=True)
-            self._send_status(f"Error: {e}")
+            self._send_status(f"Error: {str(e)[:50]}")
         finally:
             self._running = False
 
@@ -118,30 +122,47 @@ class KeyPresser:
         """Press the configured keys"""
         try:
             if not self.keys_config:
+                logger.warning("No keys configured")
                 return
 
+            logger.debug(f"Pressing {len(self.keys_config)} key(s): {self.keys_config}")
+
             pressed_keys = []
-            for config in self.keys_config:
-                key = config['key']
+            for i, config in enumerate(self.keys_config):
+                key_name = config['key']
                 press_twice = config.get('press_twice', False)
 
-                keyboard.press_and_release(key)
-                pressed_keys.append(key)
+                try:
+                    logger.debug(f"Pressing key {i+1}/{len(self.keys_config)}: {key_name} (press_twice={press_twice})")
 
-                if press_twice:
-                    time.sleep(1)  # Delay between presses
-                    keyboard.press_and_release(key)
+                    # Press and release using keyboard library
+                    keyboard.press_and_release(key_name)
+                    pressed_keys.append(key_name.upper())
+                    logger.debug(f"Successfully pressed: {key_name}")
 
-                # Small delay between different keys
-                time.sleep(0.5)
+                    if press_twice:
+                        time.sleep(0.5)  # Delay between presses
+                        logger.debug(f"Pressing second time: {key_name}")
+                        keyboard.press_and_release(key_name)
+                        logger.debug(f"Successfully pressed second time: {key_name}")
 
-            keys_str = ", ".join(pressed_keys)
-            logger.info(f"Keys pressed: {keys_str}")
-            self._send_status(f"Keys pressed: {keys_str}")
+                    # Delay between different keys
+                    time.sleep(0.5)
+
+                except Exception as e:
+                    logger.error(f"Error pressing key '{key_name}': {e}")
+                    self._send_status(f"Error pressing {key_name}: {str(e)[:30]}")
+
+            if pressed_keys:
+                keys_str = " + ".join(pressed_keys)
+                logger.info(f"Pressed: {keys_str}")
+                self._send_status(f"Pressed: {keys_str}")
+            else:
+                logger.warning("No keys were successfully pressed")
 
         except Exception as e:
-            logger.error(f"Error pressing keys: {e}", exc_info=True)
-            self._send_status(f"Error pressing keys: {e}")
+            logger.error(f"Error in _press_keys: {e}", exc_info=True)
+            self._send_status(f"Error pressing keys")
 
     def _send_status(self, message):
         """

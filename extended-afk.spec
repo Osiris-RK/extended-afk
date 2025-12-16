@@ -12,9 +12,6 @@ a = Analysis(
     ],
     hiddenimports=[
         'keyboard',
-        'pynput',
-        'pynput.keyboard',
-        'pynput._util.win32',
         'PIL',
         'PIL.Image',
         'PIL.ImageTk',

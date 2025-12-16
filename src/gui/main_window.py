@@ -76,8 +76,6 @@ class MainWindow:
         # Handle window close
         self.root.protocol("WM_DELETE_WINDOW", self._on_close)
 
-        logger.info("Application started")
-
         # Check for administrator privileges
         self._check_admin_privileges()
 
@@ -566,8 +564,6 @@ class MainWindow:
         self.settings.set('min_interval_minutes', self.min_interval_var.get())
         self.settings.set('max_interval_minutes', self.max_interval_var.get())
 
-        logger.debug("Settings updated")
-
     def _start_pressing(self):
         """Start key pressing"""
         # Validate settings
@@ -591,30 +587,46 @@ class MainWindow:
             for f, k, v in self.key_frames
         ]
 
-        # Create key presser
-        self.key_presser = KeyPresser(
-            keys_config=keys_config,
-            min_interval_minutes=min_int,
-            max_interval_minutes=max_int,
-            status_callback=self._on_key_presser_status
-        )
+        # Update buttons FIRST
+        self.start_button.config(state='disabled')
+        self.stop_button.config(state='normal')
+        self.root.update()  # Force GUI to update immediately
 
-        # Start pressing
+        # Create and start key presser in a separate thread to avoid blocking
         try:
-            self.key_presser.start()
+            def start_thread():
+                try:
+                    self.key_presser = KeyPresser(
+                        keys_config=keys_config,
+                        min_interval_minutes=min_int,
+                        max_interval_minutes=max_int,
+                        status_callback=self._on_key_presser_status
+                    )
+                    self.key_presser.start()
+                    logger.info("Key presser started successfully")
+                except Exception as e:
+                    logger.error(f"Failed to start key pressing: {e}", exc_info=True)
+                    self.root.after(0, lambda: messagebox.showerror("Error", f"Failed to start key pressing:\n{e}"))
+                    # Reset buttons on error
+                    self.root.after(0, lambda: self.start_button.config(state='normal'))
+                    self.root.after(0, lambda: self.stop_button.config(state='disabled'))
+                    self.root.after(0, self._set_config_enabled, True)
 
-            # Update buttons
-            self.start_button.config(state='disabled')
-            self.stop_button.config(state='normal')
+            import threading
+            setup_thread = threading.Thread(target=start_thread, daemon=True)
+            setup_thread.start()
 
             # Disable configuration
             self._set_config_enabled(False)
-
-            logger.info("Key presser started successfully")
+            logger.info("Key pressing started successfully")
 
         except Exception as e:
             logger.error(f"Failed to start key pressing: {e}", exc_info=True)
             messagebox.showerror("Error", f"Failed to start key pressing:\n{e}")
+            # Reset button states
+            self.start_button.config(state='normal')
+            self.stop_button.config(state='disabled')
+            self._set_config_enabled(True)
 
     def _stop_pressing(self):
         """Stop key pressing"""
@@ -652,7 +664,8 @@ class MainWindow:
         Args:
             message: Status message
         """
-        logger.info(message)
+        # Message is already logged by the key presser, just display in UI
+        pass
 
     def _open_discord(self):
         """Open Osiris DevWorks Discord"""

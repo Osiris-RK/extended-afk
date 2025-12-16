@@ -1,4 +1,11 @@
 """Main entry point for Extended AFK application"""
+# Import keyboard library FIRST, before anything else
+# This initializes keyboard hooks before tkinter starts
+try:
+    import keyboard
+except Exception as e:
+    print(f"Warning: Failed to import keyboard library: {e}")
+
 import tkinter as tk
 import logging
 from logging.handlers import RotatingFileHandler
@@ -47,10 +54,10 @@ def setup_logging():
     )
     logger.addHandler(console_handler)
 
-    logger.info("=" * 60)
-    logger.info("Extended AFK Application Starting")
-    logger.info(f"Log file: {log_file}")
-    logger.info("=" * 60)
+    # Suppress noisy debug logging from PIL
+    logging.getLogger('PIL').setLevel(logging.WARNING)
+
+    logger.info("Extended AFK started")
 
 
 def main():
