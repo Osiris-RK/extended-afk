@@ -5,6 +5,8 @@ import webbrowser
 import logging
 from PIL import Image, ImageTk
 import os
+import ctypes
+import sys
 
 from core.settings import AppSettings
 from core.key_presser import KeyPresser
@@ -21,6 +23,20 @@ ACCENT_COLOR = "#c9a961"
 TEXT_COLOR = "#333333"
 BUTTON_START_COLOR = "#4CAF50"
 BUTTON_STOP_COLOR = "#f44336"
+
+
+def is_running_as_admin():
+    """
+    Check if the application is running with administrator privileges.
+
+    Returns:
+        bool: True if running as admin, False otherwise
+    """
+    try:
+        return ctypes.windll.shell32.IsUserAnAdmin()
+    except Exception:
+        # If we can't determine, assume not admin
+        return False
 
 
 class MainWindow:
@@ -61,6 +77,9 @@ class MainWindow:
         self.root.protocol("WM_DELETE_WINDOW", self._on_close)
 
         logger.info("Application started")
+
+        # Check for administrator privileges
+        self._check_admin_privileges()
 
     def _build_ui(self):
         """Build the user interface"""
@@ -591,8 +610,10 @@ class MainWindow:
             # Disable configuration
             self._set_config_enabled(False)
 
+            logger.info("Key presser started successfully")
+
         except Exception as e:
-            logger.error(f"Failed to start key pressing: {e}")
+            logger.error(f"Failed to start key pressing: {e}", exc_info=True)
             messagebox.showerror("Error", f"Failed to start key pressing:\n{e}")
 
     def _stop_pressing(self):
@@ -619,9 +640,9 @@ class MainWindow:
         # Disable add key button and key widgets
         self.add_key_button.config(state=state)
 
-        for key_frame, _ in self.key_frames:
+        for key_frame, key_name, press_twice_var in self.key_frames:
             for widget in key_frame.winfo_children():
-                if isinstance(widget, tk.Button):
+                if isinstance(widget, tk.Button) or isinstance(widget, ttk.Button):
                     widget.config(state=state)
 
     def _on_key_presser_status(self, message):
@@ -644,6 +665,21 @@ class MainWindow:
     def _open_venmo(self):
         """Open Venmo donation page"""
         webbrowser.open("https://venmo.com/u/Amr-Abouelleil")
+
+    def _check_admin_privileges(self):
+        """Check if running with administrator privileges and warn if not"""
+        if not is_running_as_admin():
+            messagebox.showwarning(
+                "Administrator Privileges Required",
+                "Extended AFK is not running with administrator privileges.\n\n"
+                "The keyboard simulation will NOT work without admin rights.\n\n"
+                "To fix this:\n"
+                "1. Close this application\n"
+                "2. Right-click on Extended AFK and select 'Run as Administrator'\n"
+                "3. Click 'Yes' when prompted\n\n"
+                "Administrator privileges are required for keyboard simulation on Windows."
+            )
+            logger.warning("Application started without administrator privileges")
 
     def _on_close(self):
         """Handle window close event"""

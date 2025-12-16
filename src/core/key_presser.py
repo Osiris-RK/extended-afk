@@ -4,7 +4,6 @@ import time
 import random
 import threading
 import logging
-from queue import Queue
 
 logger = logging.getLogger(__name__)
 
@@ -74,7 +73,6 @@ class KeyPresser:
         """Main thread worker function"""
         try:
             # Initial delay
-            logger.info("Starting in 5 seconds...")
             self._send_status("Starting in 5 seconds...")
 
             if self._wait_interruptible(5):
@@ -89,7 +87,6 @@ class KeyPresser:
                 interval = random.randint(int(self.min_interval), int(self.max_interval))
                 minutes = interval // 60
 
-                logger.info(f"Next key press in {minutes} minutes")
                 self._send_status(f"Next key press in {minutes} minutes")
 
                 # Wait for interval (or stop event)
@@ -120,19 +117,20 @@ class KeyPresser:
     def _press_keys(self):
         """Press the configured keys"""
         try:
+            if not self.keys_config:
+                return
+
             pressed_keys = []
             for config in self.keys_config:
                 key = config['key']
                 press_twice = config.get('press_twice', False)
 
                 keyboard.press_and_release(key)
-                logger.debug(f"Pressed key: {key}")
                 pressed_keys.append(key)
 
                 if press_twice:
                     time.sleep(1)  # Delay between presses
                     keyboard.press_and_release(key)
-                    logger.debug(f"Pressed key again: {key}")
 
                 # Small delay between different keys
                 time.sleep(0.5)
