@@ -53,9 +53,8 @@ class MainWindow:
         """
         self.root = root
         self.root.title("Extended AFK - Auto Key Presser")
-        self.root.geometry("550x700")
+        self.root.geometry("550x720")
         self.root.resizable(False, False)
-        self.root.configure(bg=BG_COLOR)
 
         # Settings manager
         self.settings = AppSettings()
@@ -83,9 +82,9 @@ class MainWindow:
 
     def _build_ui(self):
         """Build the user interface"""
-        # Main container
-        main_container = tk.Frame(self.root, bg=BG_COLOR)
-        main_container.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+        # Main container - use ttk.Frame for proper theming
+        main_container = ttk.Frame(self.root, padding=15)
+        main_container.pack(fill=tk.BOTH, expand=True)
 
         # Configuration section
         self._build_configuration_section(main_container)
@@ -171,7 +170,7 @@ class MainWindow:
 
     def _build_control_button(self, parent):
         """Build the start/stop control buttons"""
-        button_frame = tk.Frame(parent, bg=BG_COLOR)
+        button_frame = ttk.Frame(parent)
         button_frame.pack(fill=tk.X, padx=5, pady=10)
 
         # Start button
@@ -237,21 +236,19 @@ class MainWindow:
     def _build_footer(self, parent):
         """Build the footer with branding and donation links"""
         # Footer frame
-        footer_frame = tk.Frame(parent, bg=BG_COLOR)
+        footer_frame = ttk.Frame(parent)
         footer_frame.pack(fill=tk.X, padx=5, pady=(10, 0))
 
         # Osiris DevWorks button (left)
         self._create_osiris_button(footer_frame)
 
         # Spacer
-        tk.Frame(footer_frame, bg=BG_COLOR, width=10).pack(side=tk.LEFT)
+        ttk.Frame(footer_frame, width=10).pack(side=tk.LEFT)
 
         # Support label
-        support_label = tk.Label(
+        support_label = ttk.Label(
             footer_frame,
             text="Support:",
-            bg=BG_COLOR,
-            fg="#666",
             font=("Segoe UI", 9)
         )
         support_label.pack(side=tk.LEFT, padx=(10, 5))
@@ -260,7 +257,7 @@ class MainWindow:
         self._create_paypal_button(footer_frame)
 
         # Spacer
-        tk.Frame(footer_frame, bg=BG_COLOR, width=5).pack(side=tk.LEFT)
+        ttk.Frame(footer_frame, width=5).pack(side=tk.LEFT)
 
         # Venmo button
         self._create_venmo_button(footer_frame)
@@ -278,7 +275,7 @@ class MainWindow:
                 img = img.resize((new_width, 40), Image.Resampling.LANCZOS)
                 photo = ImageTk.PhotoImage(img)
 
-                label = tk.Label(parent, image=photo, bg=BG_COLOR, cursor="hand2")
+                label = tk.Label(parent, image=photo, cursor="hand2")
                 label.image = photo  # Keep reference
                 label.pack(side=tk.LEFT)
                 label.bind("<Button-1>", lambda e: self._open_discord())
@@ -314,7 +311,7 @@ class MainWindow:
                 img = img.resize((new_width, 40), Image.Resampling.LANCZOS)
                 photo = ImageTk.PhotoImage(img)
 
-                label = tk.Label(parent, image=photo, bg=BG_COLOR, cursor="hand2")
+                label = tk.Label(parent, image=photo, cursor="hand2")
                 label.image = photo  # Keep reference
                 label.pack(side=tk.LEFT)
                 label.bind("<Button-1>", lambda e: self._open_paypal())
@@ -350,7 +347,7 @@ class MainWindow:
                 img = img.resize((new_width, 40), Image.Resampling.LANCZOS)
                 photo = ImageTk.PhotoImage(img)
 
-                label = tk.Label(parent, image=photo, bg=BG_COLOR, cursor="hand2")
+                label = tk.Label(parent, image=photo, cursor="hand2")
                 label.image = photo  # Keep reference
                 label.pack(side=tk.LEFT)
                 label.bind("<Button-1>", lambda e: self._open_venmo())
