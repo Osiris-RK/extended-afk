@@ -1,6 +1,8 @@
 """Main GUI window for Extended AFK application"""
 import tkinter as tk
 from tkinter import ttk, messagebox
+import ttkbootstrap as ttk_bootstrap
+from ttkbootstrap.constants import *
 import webbrowser
 import logging
 from PIL import Image, ImageTk

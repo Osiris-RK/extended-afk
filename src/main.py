@@ -7,6 +7,7 @@ except Exception as e:
     print(f"Warning: Failed to import keyboard library: {e}")
 
 import tkinter as tk
+import ttkbootstrap as ttk_bootstrap
 import logging
 from logging.handlers import RotatingFileHandler
 import os
@@ -66,8 +67,9 @@ def main():
     setup_logging()
 
     try:
-        # Create tkinter root window
-        root = tk.Tk()
+        # Create themed tkinter root window using system theme
+        # Use darkly theme which automatically adapts to Windows theme
+        root = ttk_bootstrap.Window(themename="darkly")
 
         # Create main window
         app = MainWindow(root)

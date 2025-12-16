@@ -12,6 +12,7 @@ a = Analysis(
     ],
     hiddenimports=[
         'keyboard',
+        'ttkbootstrap',
         'PIL',
         'PIL.Image',
         'PIL.ImageTk',
