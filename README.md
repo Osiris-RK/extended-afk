@@ -1,8 +1,12 @@
+<img src="assets/extended-afk.png" alt="Extended AFK Icon" width="64" height="64" align="left" />
+
 # Extended AFK - Auto Key Presser
+
+<br clear="left"/>
 
 A simple GUI application for automatically pressing keyboard keys at random intervals to prevent AFK (Away From Keyboard) timeouts.
 
-![Version](https://img.shields.io/badge/version-1.0.1-blue)
+![Version](https://img.shields.io/badge/version-1.0.2-blue)
 ![Platform](https://img.shields.io/badge/platform-Windows-lightgrey)
 
 ## Features
@@ -21,8 +25,7 @@ You can download Extended AFK from the [GitHub Releases page](https://github.com
 **`ExtendedAFK.exe`** - Portable version (no installation required)
 
 1. Download `ExtendedAFK.exe` from the releases page
-2. **Right-click** the .exe and select **"Run as Administrator"**
-   - Admin rights are required for keyboard simulation
+2. Run the executable
 3. Configure your keys and run the application
 
 
@@ -46,7 +49,6 @@ You can download Extended AFK from the [GitHub Releases page](https://github.com
 ## System Requirements
 
 - Windows 10 or later (64-bit)
-- Administrator privileges (for keyboard simulation)
 
 ## Usage
 
@@ -73,10 +75,6 @@ You can download Extended AFK from the [GitHub Releases page](https://github.com
    - Logs are also saved to: `%APPDATA%\extended-afk\logs\extended-afk.log`
 
 ## Important Notes
-
-### Administrator Privileges
-
-The keyboard simulation library requires **administrator privileges** to function. Always run the application as administrator.
 
 ### Antivirus Warnings
 

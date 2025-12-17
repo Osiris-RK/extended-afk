@@ -38,6 +38,9 @@ desktop.ini
 # Settings (user-specific, don't commit)
 settings.json
 
+# Environment variables (contains webhook URLs)
+.env
+
 # PyInstaller build artifacts
 build/
 dist/
