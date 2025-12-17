@@ -40,6 +40,14 @@ class MainWindow:
         self.root.geometry("550x720")
         self.root.resizable(False, False)
 
+        # Set window icon (for taskbar and title bar)
+        try:
+            icon_path = get_resource_path(os.path.join("assets", "extended-afk.ico"))
+            if os.path.exists(icon_path):
+                self.root.iconbitmap(icon_path)
+        except Exception as e:
+            logger.warning(f"Failed to set window icon: {e}")
+
         # Settings manager
         self.settings = AppSettings()
 
