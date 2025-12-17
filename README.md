@@ -1,8 +1,4 @@
-<img src="assets/extended-afk.png" alt="Extended AFK Icon" width="64" height="64" align="left" />
-
-# Extended AFK - Auto Key Presser
-
-<br clear="left"/>
+# Extended AFK - Auto Key Presser <img src="assets/extended-afk.png" alt="Extended AFK Icon" width="64" height="64" align="right" />
 
 A simple GUI application for automatically pressing keyboard keys at random intervals to prevent AFK (Away From Keyboard) timeouts.
 
