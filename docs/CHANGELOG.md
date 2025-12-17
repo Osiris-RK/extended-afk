@@ -22,11 +22,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Complete release infrastructure with CHANGELOG.md and RELEASE_PROCESS.md
 - Discord notification automation for releases (channel ID: 1450835473949003817)
 - Custom `/release` Claude command for streamlined releases
+- Extended AFK icon in README header
 
 ### Changed
 - Removed administrator privilege warning and all related references
 - Application now runs without requiring administrator mode
 - Updated README.md to remove administrator requirements
+- Changed "Press Twice" checkbox label to "Use Toggle Behavior" for better clarity
 
 ### Fixed
 - Improved requirements.txt with explicit ttkbootstrap and python-dotenv dependencies

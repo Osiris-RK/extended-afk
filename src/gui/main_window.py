@@ -472,11 +472,11 @@ class MainWindow:
         )
         select_button.pack(side=tk.LEFT, padx=(0, 10))
 
-        # Press twice checkbox
+        # Use toggle behavior checkbox
         press_twice_var = tk.BooleanVar(value=press_twice)
         press_twice_check = ttk.Checkbutton(
             key_frame,
-            text="Press Twice",
+            text="Use Toggle Behavior",
             variable=press_twice_var,
             command=self._on_settings_changed
         )
