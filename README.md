@@ -1,4 +1,4 @@
-# Extended AFK - Auto Key Presser <img src="assets/extended-afk.png" alt="Extended AFK Icon" width="64" height="64" align="right" />
+# Extended AFK - Auto Key Presser <img src="assets/extended-afk.png" alt="Extended AFK Icon" width="150" height="150" align="right" />
 
 A simple GUI application for automatically pressing keyboard keys at random intervals to prevent AFK (Away From Keyboard) timeouts.
 
@@ -23,24 +23,6 @@ You can download Extended AFK from the [GitHub Releases page](https://github.com
 1. Download `ExtendedAFK.exe` from the releases page
 2. Run the executable
 3. Configure your keys and run the application
-
-
-### Running from Source
-
-1. Install Python 3.8 or higher
-2. Clone the repository:
-   ```bash
-   git clone https://github.com/Osiris-RK/extended-afk.git
-   cd extended-afk
-   ```
-3. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-4. Run the application:
-   ```bash
-   python src/main.py
-   ```
 
 ## System Requirements
 
@@ -82,6 +64,17 @@ Some antivirus software may flag keystroke simulation tools as potentially unwan
 
 If your antivirus blocks the application, you may need to add it to your exclusions list.
 
+### Terms of Service Disclaimer
+
+**Important:** You are solely responsible for ensuring that your use of Extended AFK complies with the terms of service of any application, game, or service you use it with. Some games and services may prohibit the use of automation tools or AFK prevention software in their terms of service.
+
+**By using Extended AFK, you acknowledge that:**
+- You have read and understood the terms of service of the applications/games you use this tool with
+- You accept full responsibility for any consequences resulting from your use of this tool
+- The developers of Extended AFK are not responsible for any account actions, bans, or penalties that may result from your use of this software
+
+**Use this tool responsibly and at your own risk.**
+
 ### Settings Location
 
 Settings are stored at: `%APPDATA%\extended-afk\settings.json`
@@ -99,13 +92,7 @@ Your financial support helps fund development of new features:
 💳 **[PayPal Donation](https://paypal.me/RighteousKill)** - Support via PayPal
 
 💰 **[Venmo Donation](https://venmo.com/u/Amr-Abouelleil)** - Support via Venmo
-
-### Contribute
-
-- **Report bugs** with steps to reproduce
-- **Request features** you'd like to see
-- **Share feedback** and suggestions
-- **Submit code contributions** via GitHub
+Add a 
 
 ### Join the Community
 
