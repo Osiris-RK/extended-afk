@@ -141,7 +141,11 @@ class KeyPresser:
                     logger.debug(f"Successfully pressed: {key_name}")
 
                     if press_twice:
-                        time.sleep(0.5)  # Delay between presses
+                        # Hold for 2 seconds between presses so toggle behavior
+                        # registers (interruptible by stop event)
+                        if self._stop_event.wait(2.0):
+                            logger.debug("Stop requested during toggle interval")
+                            return
                         logger.debug(f"Pressing second time: {key_name}")
                         keyboard.press_and_release(key_name)
                         logger.debug(f"Successfully pressed second time: {key_name}")
