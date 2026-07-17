@@ -33,3 +33,5 @@ Small three-layer app under `src/`:
 Version lives in three places that must stay in sync: `VERSION.TXT`, `docs/CHANGELOG.md`, and the hardcoded exe name in `extended-afk.spec` (`name='ExtendedAFK-vX.Y.Z'`). Bump all three together.
 
 The release flow is documented in `docs/RELEASE_PROCESS.md` and automated by the `/release` command (`.claude/commands/release.md`): build, tag, GitHub release with the exe attached, then announce via `python scripts/discord_notify.py vX.Y.Z <release-url>`. The Discord script reads `DISCORD_RELEASE_WEBHOOK_URL` from `.env` (see `.env.example`) and parses the changelog for that version's notes. The GitHub release must be live before the Discord post fires.
+
+On every release, also update the Extended AFK entry in `../osiris-devworks-website/src/data/projects.ts` (sibling workspace repo): bump the static `version` fallback and refresh `features`/`status` for what shipped. The site auto-fetches the live version from this repo's `VERSION.TXT` on `main`, but everything else on the tile is manual. Pushing the website repo's `main` deploys it.
